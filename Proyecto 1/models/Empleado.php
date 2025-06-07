@@ -14,7 +14,6 @@ class Empleado {
     public function listar() {
         $query = "SELECT nombre, salario_base, comision_pct FROM " . $this->table_name . " ORDER BY nombre ASC";
         $result = $this->conn->query($query);
-        return $result;
     }
 
     public function registrar() {

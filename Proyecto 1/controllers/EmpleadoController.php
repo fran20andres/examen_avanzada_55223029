@@ -22,23 +22,27 @@ class EmpleadoController {
                 exit();
             }
         }
-
-        $stmt = $this->empleado->listar();
+        $result = $this->empleado->listar();
         
         $empleados_preparados = [];
-        while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
-            $salario_base = $row['salario_base'];
-            $comision_pct = $row['comision_pct'];
-            $salario_total = $salario_base + ($salario_base * $comision_pct / 100);
 
-            $empleados_preparados[] = [
-                'nombre' => $row['nombre'],
-                'salario_base_fmt' => "$" . number_format($salario_base, 2),
-                'comision_pct_fmt' => number_format($comision_pct, 2) . "%",
-                'salario_total_fmt' => "$" . number_format($salario_total, 2)
-            ];
+        if ($result && $result->num_rows > 0) {
+            while ($row = $result->fetch_assoc()) {
+                $salario_base = $row['salario_base'];
+                $comision_pct = $row['comision_pct'];
+                $salario_total = $salario_base + ($salario_base * $comision_pct / 100);
+
+                $empleados_preparados[] = [
+                    'nombre' => $row['nombre'],
+                    'salario_base_fmt' => "$" . number_format($salario_base, 2),
+                    'comision_pct_fmt' => number_format($comision_pct, 2) . "%",
+                    'salario_total_fmt' => "$" . number_format($salario_total, 2)
+                ];
+            }
+            $result->free();
         }
 
         require 'views/vista_empleados.php';
     }
 }
+
